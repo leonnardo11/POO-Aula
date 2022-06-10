@@ -1,4 +1,8 @@
 <?php
+chdir(__DIR__);
+require_once '../interfaces/interfaceCrud.php';
+require("conecta.php");
+
 
 class Investimento implements interfaceCrud{
 

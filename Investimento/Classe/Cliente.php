@@ -1,12 +1,18 @@
 <?php
 chdir(__DIR__);
 require_once '../interfaces/interfaceCrud.php';
+require("conecta.php");
 
 class Cliente implements interfaceCrud{
 
     private $id;
     private $nome;
     private $telefone;
+
+    
+    public function __construct($bd){
+        $this->db = $bd;
+    }
 
     public function setId($val){
         $this->id = $val;
@@ -33,8 +39,28 @@ class Cliente implements interfaceCrud{
     }
 
     public function salvar(array $dados){
-        $this->nome = $dados['nome'];
-        $this->telefone = $dados['telefone'];
+
+
+        if(empty($_POST['nome'] || $_POST['telefone'])){
+            die('ERRO! os campos são obriatórios');
+        }
+         $stmt = $this->db->prepare(" INSERT INTO clientes
+                                    (nome, telefone)
+                                VALUES 
+                                    (:nome, :telefone)");
+        
+        $valores[':nome'] = $_POST['nome'];
+        $valores[':telefone'] = $_POST['telefone'];
+
+
+        //Executamos a consulta SQL
+        if( $stmt->execute($valores) ){
+            echo "salvo com sucesso";
+        } else {
+            echo "<br><br> Não consegui gravar no banco :-(";
+        }
+        
+
     }
 
     public function apagar(int $id):bool{
